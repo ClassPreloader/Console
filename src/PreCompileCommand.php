@@ -72,7 +72,7 @@ EOF
 
         $output->writeln('> Loading configuration file');
         $config = $input->getOption('config');
-        $files = (new ConfigResolver)->getFileList($config);
+        $files = (new ConfigResolver())->getFileList($config);
         $output->writeLn('- Found '.count($files).' files');
 
         $preloader = new ClassPreloader(new PrettyPrinter(), new Parser(new Lexer()), $this->getTraverser($input));
