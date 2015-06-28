@@ -15,7 +15,7 @@
     ],
     "require":{
         "php": ">=5.5.9",
-        "classpreloader/classpreloader": "~2.0@dev",
+        "classpreloader/classpreloader": "~2.0",
         "symfony/console": "~2.3"
     },
     "require-dev":{
