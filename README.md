@@ -1,4 +1,6 @@
 Class Preloader for PHP
 =======================
 
-See https://github.com/ClassPreloader/ClassPreloader for all the docs.
+#### This is the console component.
+
+Please see https://github.com/ClassPreloader/ClassPreloader for all the docs.
