@@ -17,5 +17,5 @@ if (file_exists($autoloadPath = __DIR__.'/../../autoload.php')) {
     require_once __DIR__.'/vendor/autoload.php';
 }
 
-$application = new ClassPreloader\Application();
+$application = new ClassPreloader\Console\Application();
 $application->run();
