@@ -13,7 +13,7 @@
 namespace ClassPreloader\Console;
 
 use ClassPreloader\ClassPreloader;
-use ClassPreloader\Exceptions\SkipFileException;
+use ClassPreloader\Exceptions\VisitorExceptionInterface;
 use ClassPreloader\Parser\DirVisitor;
 use ClassPreloader\Parser\FileVisitor;
 use ClassPreloader\Parser\NodeTraverser;
@@ -93,7 +93,7 @@ EOF
                 $code = $preloader->getCode($file, $comments);
                 $output->writeln('- Writing '.$file);
                 fwrite($handle, $code."\n");
-            } catch (SkipFileException $ex) {
+            } catch (VisitorExceptionInterface $e) {
                 $countSkipped++;
                 $output->writeln('- Skipping '.$file);
             }
