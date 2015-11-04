@@ -74,9 +74,9 @@ EOF
         $files = (new ConfigResolver())->getFileList($config);
         $output->writeLn('- Found '.count($files).' files');
 
-
+        $printer = new PrettyPrinter();
         $parser = (new ParserFactory)->create(ParserFactory::PREFER_PHP7);
-        $preloader = new ClassPreloader(new PrettyPrinter(), $parser), $this->getTraverser($input));
+        $preloader = new ClassPreloader($printer, $parser, $this->getTraverser($input));
 
         $outputFile = $input->getOption('output');
         $handle = $preloader->prepareOutput($outputFile);
