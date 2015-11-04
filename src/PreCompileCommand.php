@@ -75,7 +75,7 @@ EOF
         $output->writeLn('- Found '.count($files).' files');
 
         $printer = new PrettyPrinter();
-        $parser = (new ParserFactory)->create(ParserFactory::PREFER_PHP7);
+        $parser = (new ParserFactory())->create(ParserFactory::PREFER_PHP7);
         $preloader = new ClassPreloader($printer, $parser, $this->getTraverser($input));
 
         $outputFile = $input->getOption('output');
