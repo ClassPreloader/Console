@@ -18,8 +18,7 @@ use ClassPreloader\Parser\DirVisitor;
 use ClassPreloader\Parser\FileVisitor;
 use ClassPreloader\Parser\NodeTraverser;
 use InvalidArgumentException;
-use PhpParser\Lexer;
-use PhpParser\Parser;
+use PhpParser\ParserFactory;
 use PhpParser\PrettyPrinter\Standard as PrettyPrinter;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -75,7 +74,9 @@ EOF
         $files = (new ConfigResolver())->getFileList($config);
         $output->writeLn('- Found '.count($files).' files');
 
-        $preloader = new ClassPreloader(new PrettyPrinter(), new Parser(new Lexer()), $this->getTraverser($input));
+
+        $parser = (new ParserFactory)->create(ParserFactory::PREFER_PHP7);
+        $preloader = new ClassPreloader(new PrettyPrinter(), $parser), $this->getTraverser($input));
 
         $outputFile = $input->getOption('output');
         $handle = $preloader->prepareOutput($outputFile);
