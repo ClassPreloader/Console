@@ -236,6 +236,29 @@ EOT;
         unlink(__DIR__.DIRECTORY_SEPARATOR.'output.txt');
     }
 
+    /**
+     * @dataProvider commandProvider
+     */
+    public function testStrictCommand(array $config, $expected, $compiled)
+    {
+        if (version_compare(PHP_VERSION, '7') < 1) {
+            $this->setExpectedException('RuntimeException', 'Strict mode requires PHP 7 or greater.');
+        }
+
+        $command = new PreCompileCommand();
+        $input = new ArrayInput(array_merge($config, ['--strict_types' => true]));
+        $output = new BufferedOutput();
+
+        $this->assertSame(0, $command->run($input, $output));
+        $this->assertSame($this->normalize($expected), $this->normalize($output->fetch()));
+
+        $contents = file_get_contents(__DIR__.DIRECTORY_SEPARATOR.'output.txt');
+
+        $this->assertSame($this->normalize(str_replace('<?php', '<?php declare(strict_types=1);', $compiled)), $this->normalize($contents));
+
+        unlink(__DIR__.DIRECTORY_SEPARATOR.'output.txt');
+    }
+
     public function testIncludeCompiledFile()
     {
         $dir = __DIR__.DIRECTORY_SEPARATOR.'stubs'.DIRECTORY_SEPARATOR;

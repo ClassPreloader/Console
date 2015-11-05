@@ -16,6 +16,7 @@ use ClassPreloader\ClassPreloader;
 use ClassPreloader\Exceptions\VisitorExceptionInterface;
 use ClassPreloader\Parser\DirVisitor;
 use ClassPreloader\Parser\FileVisitor;
+use ClassPreloader\Parser\StrictTypesVisitor;
 use ClassPreloader\Parser\NodeTraverser;
 use InvalidArgumentException;
 use PhpParser\ParserFactory;
@@ -48,6 +49,7 @@ class PreCompileCommand extends Command
             ->addOption('skip_dir_file', null, InputOption::VALUE_NONE, 'Skip files with __DIR__ or __FILE__ to make the cache portable')
             ->addOption('fix_dir', null, InputOption::VALUE_REQUIRED, 'Convert __DIR__ constants to the original directory of a file', 1)
             ->addOption('fix_file', null, InputOption::VALUE_REQUIRED, 'Convert __FILE__ constants to the original path of a file', 1)
+            ->addOption('strict_types', null, InputOption::VALUE_REQUIRED, 'Set to 1 to enable strict types mode', 0)
             ->addOption('strip_comments', null, InputOption::VALUE_REQUIRED, 'Set to 1 to strip comments from each source file', 0)
             ->setHelp(<<<EOF
 The <info>%command.name%</info> command iterates over each script, normalizes
@@ -79,7 +81,7 @@ EOF
         $preloader = new ClassPreloader($printer, $parser, $this->getTraverser($input));
 
         $outputFile = $input->getOption('output');
-        $handle = $preloader->prepareOutput($outputFile);
+        $handle = $preloader->prepareOutput($outputFile, $input->getOption('strict_types'));
 
         $output->writeln('> Compiling classes');
 
@@ -145,6 +147,10 @@ EOF
 
         if ($input->getOption('fix_file')) {
             $traverser->addVisitor(new FileVisitor($skip));
+        }
+
+        if (!$input->getOption('strict_types')) {
+            $traverser->addVisitor(new StrictTypesVisitor());
         }
 
         return $traverser;
