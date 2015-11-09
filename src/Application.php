@@ -22,7 +22,7 @@ use Symfony\Component\Console\Application as BaseApplication;
 class Application extends BaseApplication
 {
     /**
-     * Create a new application.
+     * Create a new application instance.
      *
      * @return void
      */
