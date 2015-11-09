@@ -12,8 +12,8 @@
 
 namespace ClassPreloader\Console;
 
-use ClassPreloader\Factory;
 use ClassPreloader\Exceptions\VisitorExceptionInterface;
+use ClassPreloader\Factory;
 use InvalidArgumentException;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
