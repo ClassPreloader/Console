@@ -39,7 +39,6 @@ class ConfigResolver
             $config = getcwd().'/'.$config;
         }
 
-        // Ensure that the config file exists
         if (!file_exists($config)) {
             throw new InvalidArgumentException(sprintf('Configuration file "%s" does not exist.', $config));
         }
