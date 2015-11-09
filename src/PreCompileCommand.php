@@ -12,15 +12,9 @@
 
 namespace ClassPreloader\Console;
 
-use ClassPreloader\ClassPreloader;
+use ClassPreloader\Factory;
 use ClassPreloader\Exceptions\VisitorExceptionInterface;
-use ClassPreloader\Parser\DirVisitor;
-use ClassPreloader\Parser\FileVisitor;
-use ClassPreloader\Parser\NodeTraverser;
-use ClassPreloader\Parser\StrictTypesVisitor;
 use InvalidArgumentException;
-use PhpParser\ParserFactory;
-use PhpParser\PrettyPrinter\Standard as PrettyPrinter;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -76,9 +70,7 @@ EOF
         $files = (new ConfigResolver())->getFileList($config);
         $output->writeLn('- Found '.count($files).' files');
 
-        $printer = new PrettyPrinter();
-        $parser = (new ParserFactory())->create(ParserFactory::PREFER_PHP7);
-        $preloader = new ClassPreloader($printer, $parser, $this->getTraverser($input));
+        $preloader = (new Factory())->create($this->getOptions($input));
 
         $outputFile = $input->getOption('output');
         $handle = $preloader->prepareOutput($outputFile, $input->getOption('strict_types'));
@@ -129,30 +121,19 @@ EOF
     }
 
     /**
-     * Get the node traverser used by the command.
+     * Get the options to pass to the factory.
      *
      * @param \Symfony\Component\Console\Input\InputInterface $input
      *
-     * @return \ClassPreloader\Parser\NodeTraverser
+     * @return bool[]
      */
-    protected function getTraverser(InputInterface $input)
+    protected function getOptions(InputInterface $input)
     {
-        $traverser = new NodeTraverser();
-
-        $skip = $input->getOption('skip_dir_file');
-
-        if ($input->getOption('fix_dir')) {
-            $traverser->addVisitor(new DirVisitor($skip));
-        }
-
-        if ($input->getOption('fix_file')) {
-            $traverser->addVisitor(new FileVisitor($skip));
-        }
-
-        if (!$input->getOption('strict_types')) {
-            $traverser->addVisitor(new StrictTypesVisitor());
-        }
-
-        return $traverser;
+        return [
+            'dir'    => (bool) $input->getOption('fix_dir'),
+            'file'   => (bool) $input->getOption('fix_file'),
+            'skip'   => (bool) $input->getOption('skip_dir_file'),
+            'strict' => (bool) $input->getOption('strict_types'),
+        ];
     }
 }
