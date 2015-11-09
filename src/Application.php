@@ -28,7 +28,7 @@ class Application extends BaseApplication
      */
     public function __construct()
     {
-        parent::__construct('Class Preloader', '2.0');
+        parent::__construct('Class Preloader', '3.0');
 
         $this->add(new PreCompileCommand());
     }
