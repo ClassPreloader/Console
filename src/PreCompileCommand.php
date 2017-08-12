@@ -83,6 +83,7 @@ EOF
 
         foreach ($files as $file) {
             $count++;
+
             try {
                 $code = $preloader->getCode($file, $comments);
                 $output->writeln('- Writing '.$file);
