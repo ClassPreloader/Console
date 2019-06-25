@@ -21,7 +21,7 @@ Class Preloader is licensed under [The MIT License (MIT)](LICENSE).
 
 <div align="center">
 	<b>
-		<a href="https://tidelift.com/subscription/pkg/packagist-classpreloader-classpreloader?utm_source=packagist-classpreloader-classpreloader&utm_medium=referral&utm_campaign=readme">Get professional support for Class Preloader with a Tidelift subscription</a>
+		<a href="https://tidelift.com/subscription/pkg/packagist-classpreloader-console?utm_source=packagist-classpreloader-console&utm_medium=referral&utm_campaign=readme">Get professional support for Class Preloader with a Tidelift subscription</a>
 	</b>
 	<br>
 	<sub>
