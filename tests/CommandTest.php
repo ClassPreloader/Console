@@ -11,10 +11,11 @@
  */
 
 use ClassPreloader\Console\PreCompileCommand;
+use PHPUnit\Framework\TestCase;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Output\BufferedOutput;
 
-class CommandTest extends PHPUnit_Framework_TestCase
+class CommandTest extends TestCase
 {
     private $autoloadFunc;
 
