@@ -1,22 +1,26 @@
-language: php
-
-sudo: false
+dist: xenial
 
 matrix:
   include:
-    - php: 5.5.9
-    - php: 5.5
-    - php: 5.6
-    - php: 7.0
-    - php: 7.1
-    - php: 7.2
-    - php: hhvm
-      dist: trusty
+    - env:
+        - PHP_VERSION=5.6
+    - env:
+        - PHP_VERSION=7.0
+    - env:
+        - PHP_VERSION=7.1
+    - env:
+        - PHP_VERSION=7.2
+    - env:
+        - PHP_VERSION=7.3
 
 before_install:
-  - if [[ $TRAVIS_PHP_VERSION =~ ^hhvm ]]; then echo 'hhvm.jit = false' >> /etc/hhvm/php.ini ; fi
-  - composer self-update --stable -n
+  - travis_retry docker pull registry.gitlab.com/grahamcampbell/php:$PHP_VERSION
 
-install: travis_retry composer install --no-suggest --prefer-dist -n -o
+install:
+  - travis_retry docker run -it -w /data -v ${PWD}:/data:delegated --entrypoint composer registry.gitlab.com/grahamcampbell/php:$PHP_VERSION install --no-suggest --prefer-dist -n -o
 
-script: vendor/bin/phpunit
+script:
+  - docker run -it -w /data -v ${PWD}:/data:delegated --entrypoint vendor/bin/phpunit registry.gitlab.com/grahamcampbell/php:$PHP_VERSION --coverage-clover build/logs/clover.xml
+
+after_script:
+  - travis_retry docker run -it -w /data -v ${PWD}:/data:delegated --entrypoint ocular registry.gitlab.com/grahamcampbell/php:$PHP_VERSION code-coverage:upload --format=php-clover build/logs/clover.xml
