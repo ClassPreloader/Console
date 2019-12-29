@@ -5,6 +5,9 @@ Class Preloader for PHP
 
 Please see https://github.com/ClassPreloader/ClassPreloader for all the docs.
 
+![Banner](https://user-images.githubusercontent.com/2829600/71563674-7467c580-2a8b-11ea-8776-4bb143a03e47.png)
+
+
 Security
 --------
 
