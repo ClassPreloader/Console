@@ -14,8 +14,8 @@ declare(strict_types=1);
 
 namespace ClassPreloader\Console;
 
-use ClassPreloader\Exception\VisitorExceptionInterface;
 use ClassPreloader\CodeGenerator;
+use ClassPreloader\Exception\VisitorExceptionInterface;
 use ClassPreloader\OutputWriter;
 use InvalidArgumentException;
 use Symfony\Component\Console\Command\Command;
