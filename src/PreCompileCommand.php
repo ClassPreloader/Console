@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of Class Preloader.
  *
@@ -12,8 +14,9 @@
 
 namespace ClassPreloader\Console;
 
-use ClassPreloader\Exceptions\VisitorExceptionInterface;
-use ClassPreloader\Factory;
+use ClassPreloader\Exception\VisitorExceptionInterface;
+use ClassPreloader\CodeGenerator;
+use ClassPreloader\OutputWriter;
 use InvalidArgumentException;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -25,7 +28,7 @@ use Symfony\Component\Console\Output\OutputInterface;
  *
  * This allows the user to communicate with class preloader.
  */
-class PreCompileCommand extends Command
+final class PreCompileCommand extends Command
 {
     /**
      * Configure the current command.
@@ -59,46 +62,48 @@ EOF
      * @param \Symfony\Component\Console\Input\InputInterface   $input
      * @param \Symfony\Component\Console\Output\OutputInterface $output
      *
-     * @return int|null
+     * @return int
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $this->validateCommand($input);
+        self::validateCommand($input);
 
         $output->writeln('> Loading configuration file');
-        $config = $input->getOption('config');
-        $files = (new ConfigResolver())->getFileList($config);
-        $output->writeLn('- Found '.count($files).' files');
+        $config = (string) $input->getOption('config');
+        $files = ConfigResolver::getFileList($config);
+        $output->writeln('- Found '.count($files).' files');
 
-        $preloader = (new Factory())->create($this->getOptions($input));
+        $options = $this->getOptions($input);
+        $codeGen = CodeGenerator::create($options);
+        $outputFile = (string) $input->getOption('output');
+        $comments = (bool) $input->getOption('strip_comments');
 
-        $outputFile = $input->getOption('output');
-        $handle = $preloader->prepareOutput($outputFile, $input->getOption('strict_types'));
+        self::compileFiles($outputFile, $options['strict'], (function () use ($codeGen, $comments, $files, $output, $outputFile) {
+            $output->writeln('> Compiling classes');
 
-        $output->writeln('> Compiling classes');
+            $count = 0;
+            $countSkipped = 0;
 
-        $count = 0;
-        $countSkipped = 0;
-        $comments = !$input->getOption('strip_comments');
+            foreach ($files as $file) {
+                $count++;
 
-        foreach ($files as $file) {
-            $count++;
-
-            try {
-                $code = $preloader->getCode($file, $comments);
-                $output->writeln('- Writing '.$file);
-                fwrite($handle, $code."\n");
-            } catch (VisitorExceptionInterface $e) {
-                $countSkipped++;
-                $output->writeln('- Skipping '.$file);
+                try {
+                    $code = $codeGen->getCode($file, !$comments);
+                    $output->writeln('- Writing '.$file);
+                    yield $code;
+                } catch (VisitorExceptionInterface $e) {
+                    $countSkipped++;
+                    $output->writeln('- Skipping '.$file);
+                }
             }
-        }
 
-        fclose($handle);
+            $output->writeln("> Compiled loader written to $outputFile");
+            $output->writeln('- Files: '.($count - $countSkipped).'/'.$count.' (skipped: '.$countSkipped.')');
+        })());
 
-        $output->writeln("> Compiled loader written to $outputFile");
-        $output->writeln('- Files: '.($count - $countSkipped).'/'.$count.' (skipped: '.$countSkipped.')');
         $output->writeln('- Filesize: '.(round(filesize($outputFile) / 1024)).' kb');
+
+        return 0;
     }
 
     /**
@@ -110,7 +115,7 @@ EOF
      *
      * @return void
      */
-    protected function validateCommand(InputInterface $input)
+    private static function validateCommand(InputInterface $input)
     {
         if (!$input->getOption('output')) {
             throw new InvalidArgumentException('An output option is required.');
@@ -118,6 +123,32 @@ EOF
 
         if (!$input->getOption('config')) {
             throw new InvalidArgumentException('A config option is required.');
+        }
+    }
+
+    /**
+     * Compile the given files, leaving the result in the output file.
+     *
+     * @param string           $outputFile
+     * @param bool             $strictTypes
+     * @param iterable<string> $files
+     *
+     * @throws \ClassPreloader\Exception\IOException
+     *
+     * @return void
+     */
+    private static function compileFiles(string $outputFile, bool $strictTypes, $files)
+    {
+        $handle = OutputWriter::openOutputFile($outputFile);
+
+        try {
+            OutputWriter::writeOpeningTag($handle, $strictTypes);
+
+            foreach ($files as $code) {
+                OutputWriter::writeFileContent($handle, $code."\n");
+            }
+        } finally {
+            OutputWriter::closeHandle($handle);
         }
     }
 

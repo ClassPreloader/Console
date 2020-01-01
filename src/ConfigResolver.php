@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of Class Preloader.
  *
@@ -12,34 +14,34 @@
 
 namespace ClassPreloader\Console;
 
-use ClassPreloader\Config;
+use ClassPreloader\ClassLoader\Config;
 use InvalidArgumentException;
 
 /**
  * This is the config resolver class.
  */
-class ConfigResolver
+final class ConfigResolver
 {
     /**
      * Get a list of files in order.
      *
-     * @param mixed $config
+     * @param string $config
      *
      * @throws \InvalidArgumentException
      *
-     * @return array
+     * @return string[]
      */
-    public function getFileList($config)
+    public static function getFileList(string $config)
     {
-        if (strpos($config, ',')) {
+        if (strpos($config, ',') !== false) {
             return array_filter(explode(',', $config));
         }
 
-        if (!$this->isAbsolutePath($config)) {
+        if (!self::isAbsolutePath($config)) {
             $config = getcwd().'/'.$config;
         }
 
-        if (!file_exists($config)) {
+        if (!file_exists($config) || !is_readable($config)) {
             throw new InvalidArgumentException(sprintf('Configuration file "%s" does not exist.', $config));
         }
 
@@ -63,7 +65,7 @@ class ConfigResolver
      *
      * @return bool
      */
-    protected function isAbsolutePath($file)
+    private static function isAbsolutePath($file)
     {
         return strspn($file, '/\\', 0, 1)
             || (strlen($file) > 3 && ctype_alpha($file[0])

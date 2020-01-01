@@ -1,26 +1,94 @@
-dist: xenial
-
 matrix:
   include:
-    - env:
-        - PHP_VERSION=5.6
-    - env:
+    - name: PHP 7.0; Symfony 3
+      dist: xenial
+      env:
         - PHP_VERSION=7.0
-    - env:
+        - SYMFONY_VERSION=^3.4
+        - RUN_PHPUNIT=true
+    - name: PHP 7.1; Symfony 3
+      dist: bionic
+      env:
         - PHP_VERSION=7.1
-    - env:
+        - SYMFONY_VERSION=^3.4
+        - RUN_PHPUNIT=true
+    - name: PHP 7.1; Symfony 4
+      dist: bionic
+      env:
+        - PHP_VERSION=7.1
+        - SYMFONY_VERSION=^4.0
+        - RUN_PHPUNIT=true
+    - name: PHP 7.2; Symfony 3
+      dist: bionic
+      env:
         - PHP_VERSION=7.2
-    - env:
+        - SYMFONY_VERSION=^3.4
+        - RUN_PHPUNIT=true
+    - name: PHP 7.2; Symfony 4
+      dist: bionic
+      env:
+        - PHP_VERSION=7.2
+        - SYMFONY_VERSION=^4.0
+        - RUN_PHPUNIT=true
+    - name: PHP 7.2; Symfony 5
+      dist: bionic
+      env:
+        - PHP_VERSION=7.2
+        - SYMFONY_VERSION=^5.0
+        - RUN_PHPUNIT=true
+    - name: PHP 7.3; Symfony 3
+      dist: bionic
+      env:
         - PHP_VERSION=7.3
+        - SYMFONY_VERSION=^3.4
+        - RUN_PHPUNIT=true
+    - name: PHP 7.3; Symfony 4
+      dist: bionic
+      env:
+        - PHP_VERSION=7.3
+        - SYMFONY_VERSION=^4.0
+        - RUN_PHPUNIT=true
+    - name: PHP 7.3; Symfony 5
+      dist: bionic
+      env:
+        - PHP_VERSION=7.3
+        - SYMFONY_VERSION=^5.0
+        - RUN_PHPUNIT=true
+    - name: PHP 7.4; Symfony 3
+      dist: bionic
+      env:
+        - PHP_VERSION=7.4
+        - SYMFONY_VERSION=^3.4
+        - RUN_PHPUNIT=true
+    - name: PHP 7.4; Symfony 4
+      dist: bionic
+      env:
+        - PHP_VERSION=7.4
+        - SYMFONY_VERSION=^4.0
+        - RUN_PHPUNIT=true
+    - name: PHP 7.4; Symfony 5
+      dist: bionic
+      env:
+        - PHP_VERSION=7.4
+        - SYMFONY_VERSION=^5.0
+        - RUN_PHPUNIT=true
+    - name: PHPStan
+      dist: bionic
+      env:
+        - PHP_VERSION=7.4
+        - RUN_PHPSTAN=true
 
 before_install:
   - travis_retry docker pull registry.gitlab.com/grahamcampbell/php:$PHP_VERSION
+  - if [[ ! -z $SYMFONY_VERSION ]]; then docker run -it -w /data -v ${PWD}:/data:delegated --entrypoint composer registry.gitlab.com/grahamcampbell/php:$PHP_VERSION require "symfony/console:${SYMFONY_VERSION}" --no-update -n; fi
 
 install:
   - travis_retry docker run -it -w /data -v ${PWD}:/data:delegated --entrypoint composer registry.gitlab.com/grahamcampbell/php:$PHP_VERSION install --no-suggest --prefer-dist -n -o
+  - if [[ ! -z $RUN_PHPSTAN ]]; then travis_retry docker run -it -w /data -v ${PWD}:/data:delegated --entrypoint composer registry.gitlab.com/grahamcampbell/php:$PHP_VERSION bin phpstan install --no-suggest --prefer-dist -n -o; fi
 
 script:
-  - docker run -it -w /data -v ${PWD}:/data:delegated --entrypoint vendor/bin/phpunit registry.gitlab.com/grahamcampbell/php:$PHP_VERSION --coverage-clover build/logs/clover.xml
+  - if [[ ! -z $RUN_PHPUNIT ]]; then docker run -it -w /data -v ${PWD}:/data:delegated --entrypoint vendor/bin/phpunit registry.gitlab.com/grahamcampbell/php:$PHP_VERSION --coverage-clover build/logs/clover.xml; fi
+  - if [[ ! -z $RUN_PHPSTAN ]]; then docker run -it -w /data -v ${PWD}:/data:delegated --entrypoint vendor/bin/phpstan registry.gitlab.com/grahamcampbell/php:$PHP_VERSION analyse src; fi
 
 after_script:
-  - travis_retry docker run -it -w /data -v ${PWD}:/data:delegated --entrypoint ocular registry.gitlab.com/grahamcampbell/php:$PHP_VERSION code-coverage:upload --format=php-clover build/logs/clover.xml
+  - if [[ ! -z $RUN_PHPUNIT ]]; then travis_retry docker run -it -w /data -v ${PWD}:/data:delegated --entrypoint ocular registry.gitlab.com/grahamcampbell/php:$PHP_VERSION code-coverage:upload --format=php-clover build/logs/clover.xml; fi

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of Class Preloader.
  *
@@ -19,7 +21,7 @@ use Symfony\Component\Console\Application as BaseApplication;
  *
  * This is sets everything up for the CLI.
  */
-class Application extends BaseApplication
+final class Application extends BaseApplication
 {
     /**
      * Create a new application instance.
