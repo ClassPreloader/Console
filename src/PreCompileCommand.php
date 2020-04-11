@@ -45,12 +45,13 @@ class PreCompileCommand extends Command
             ->addOption('fix_file', null, InputOption::VALUE_REQUIRED, 'Convert __FILE__ constants to the original path of a file', 1)
             ->addOption('strict_types', null, InputOption::VALUE_REQUIRED, 'Set to 1 to enable strict types mode', 0)
             ->addOption('strip_comments', null, InputOption::VALUE_REQUIRED, 'Set to 1 to strip comments from each source file', 0)
-            ->setHelp(<<<'EOF'
+            ->setHelp(
+                <<<'EOF'
 The <info>%command.name%</info> command iterates over each script, normalizes
 the file to be wrapped in namespaces, and combines each file into a single PHP
 file.
 EOF
-        );
+            );
     }
 
     /**
