@@ -24,9 +24,9 @@ class CommandTest extends TestCase
     /**
      * This additional autoloader is needed to test if the class is not put multiple times into the cache.
      *
-     * See https://github.com/ClassPreloader/ClassPreloader/pull/35.
+     * @before
      */
-    public function setUp()
+    public function setUpAutoloader()
     {
         $this->autoloadFunc = function ($class) {
             return false;
@@ -35,7 +35,10 @@ class CommandTest extends TestCase
         spl_autoload_register($this->autoloadFunc, true, true);
     }
 
-    public function tearDown()
+    /**
+     * @after
+     */
+    public function tearDownAutoloader()
     {
         spl_autoload_unregister($this->autoloadFunc);
     }
