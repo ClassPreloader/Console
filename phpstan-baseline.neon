@@ -26,6 +26,6 @@ parameters:
 			path: src/PreCompileCommand.php
 
 		-
-			message: "#^Only booleans are allowed in a negated boolean, array\\<string\\>\\|bool\\|string\\|null given\\.$#"
+			message: "#^Only booleans are allowed in a negated boolean, mixed given\\.$#"
 			count: 2
 			path: src/PreCompileCommand.php
