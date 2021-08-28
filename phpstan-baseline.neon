@@ -11,11 +11,6 @@ parameters:
 			path: src/ConfigResolver.php
 
 		-
-			message: "#^Cannot cast array\\<string\\>\\|bool\\|string\\|null to string\\.$#"
-			count: 2
-			path: src/PreCompileCommand.php
-
-		-
 			message: "#^Anonymous function should have native return typehint \"Generator\"\\.$#"
 			count: 1
 			path: src/PreCompileCommand.php
