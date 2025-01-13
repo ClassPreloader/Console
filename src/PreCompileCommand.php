@@ -102,7 +102,7 @@ EOF
             $output->writeln('- Files: '.($count - $countSkipped).'/'.$count.' (skipped: '.$countSkipped.')');
         })());
 
-        $output->writeln('- Filesize: '.(round(filesize($outputFile) / 1024)).' kb');
+        $output->writeln('- Filesize: '.round(filesize($outputFile) / 1024).' kb');
 
         return 0;
     }
