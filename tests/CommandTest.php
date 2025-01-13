@@ -5,7 +5,7 @@ declare(strict_types=1);
 /*
  * This file is part of Class Preloader.
  *
- * (c) Graham Campbell <graham@alt-three.com>
+ * (c) Graham Campbell <hello@gjcampbell.co.uk>
  * (c) Michael Dowling <mtdowling@gmail.com>
  *
  * For the full copyright and license information, please view the LICENSE
@@ -247,10 +247,6 @@ EOT;
      */
     public function testStrictCommand(array $config, $expected, $compiled)
     {
-        if (version_compare(PHP_VERSION, '7') < 1) {
-            $this->setExpectedException('RuntimeException', 'Strict mode requires PHP 7 or greater.');
-        }
-
         $command = new PreCompileCommand();
         $input = new ArrayInput(array_merge($config, ['--strict_types' => true]));
         $output = new BufferedOutput();

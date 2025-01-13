@@ -5,7 +5,7 @@ declare(strict_types=1);
 /*
  * This file is part of Class Preloader.
  *
- * (c) Graham Campbell <graham@alt-three.com>
+ * (c) Graham Campbell <hello@gjcampbell.co.uk>
  * (c) Michael Dowling <mtdowling@gmail.com>
  *
  * For the full copyright and license information, please view the LICENSE
@@ -31,7 +31,7 @@ final class ConfigResolver
      *
      * @return string[]
      */
-    public static function getFileList(string $config)
+    public static function getFileList(string $config): array
     {
         if (strpos($config, ',') !== false) {
             return array_filter(explode(',', $config));
@@ -65,7 +65,7 @@ final class ConfigResolver
      *
      * @return bool
      */
-    private static function isAbsolutePath($file)
+    private static function isAbsolutePath($file): bool
     {
         return strspn($file, '/\\', 0, 1)
             || (

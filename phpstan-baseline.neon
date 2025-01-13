@@ -1,26 +1,26 @@
 parameters:
 	ignoreErrors:
 		-
-			message: "#^Only booleans are allowed in \\|\\|, int given on the left side\\.$#"
-			count: 1
-			path: src/ConfigResolver.php
-
-		-
 			message: "#^Only booleans are allowed in &&, int given on the right side\\.$#"
 			count: 1
 			path: src/ConfigResolver.php
 
 		-
-			message: "#^Anonymous function should have native return typehint \"Generator\"\\.$#"
+			message: "#^Only booleans are allowed in \\|\\|, int given on the left side\\.$#"
 			count: 1
-			path: src/PreCompileCommand.php
+			path: src/ConfigResolver.php
 
 		-
-			message: "#^Only numeric types are allowed in /, int\\|false given on the left side\\.$#"
-			count: 1
+			message: "#^Cannot cast mixed to string\\.$#"
+			count: 2
 			path: src/PreCompileCommand.php
 
 		-
 			message: "#^Only booleans are allowed in a negated boolean, mixed given\\.$#"
 			count: 2
+			path: src/PreCompileCommand.php
+
+		-
+			message: "#^Only numeric types are allowed in /, int\\<0, max\\>\\|false given on the left side\\.$#"
+			count: 1
 			path: src/PreCompileCommand.php

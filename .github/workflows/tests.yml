@@ -7,35 +7,37 @@ on:
 jobs:
   tests:
     name: PHP ${{ matrix.php }}; Symfony ${{ matrix.symfony }}
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
 
     strategy:
       matrix:
-        php: ['7.0', '7.1', '7.2', '7.3', '7.4', '8.0', '8.1']
-        symfony: ['3', '4', '5', '6']
+        php: ['7.2', '7.3', '7.4', '8.0', '8.1', '8.2', '8.3', '8.4']
+        symfony: ['4', '5', '6', '7']
         exclude:
-          - php: '7.0'
-            symfony: '4'
-          - php: '7.0'
-            symfony: '5'
-          - php: '7.0'
-            symfony: '6'
-          - php: '7.1'
-            symfony: '5'
-          - php: '7.1'
-            symfony: '6'
           - php: '7.2'
             symfony: '6'
+          - php: '7.2'
+            symfony: '7'
           - php: '7.3'
             symfony: '6'
+          - php: '7.3'
+            symfony: '7'
           - php: '7.4'
             symfony: '6'
+          - php: '7.4'
+            symfony: '7'
+          - php: '8.0'
+            symfony: '7'
           - php: '8.1'
-            symfony: '3'
+            symfony: '7'
+          - php: '8.3'
+            symfony: '4'
+          - php: '8.4'
+            symfony: '4'
 
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
@@ -47,44 +49,40 @@ jobs:
       - name: Setup Problem Matchers
         run: echo "::add-matcher::${{ runner.tool_cache }}/phpunit.json"
 
-      - name: Mimic PHP 8.0
-        run: composer config platform.php 8.0.999
-        if: matrix.php > 8
-
-      - name: Select Symfony 3
-        uses: nick-invision/retry@v1
-        with:
-          timeout_minutes: 5
-          max_attempts: 5
-          command: composer require "symfony/process:^3.4" --no-update --no-interaction
-        if: "matrix.symfony == '3'"
-
       - name: Select Symfony 4
-        uses: nick-invision/retry@v1
+        uses: nick-invision/retry@v3
         with:
           timeout_minutes: 5
           max_attempts: 5
-          command: composer require "symfony/process:^4.4" --no-update --no-interaction
+          command: composer require "symfony/console:^4.4" --no-update --no-interaction
         if: "matrix.symfony == '4'"
 
       - name: Select Symfony 5
-        uses: nick-invision/retry@v1
+        uses: nick-invision/retry@v3
         with:
           timeout_minutes: 5
           max_attempts: 5
-          command: composer require "symfony/process:^5.3" --no-update --no-interaction
+          command: composer require "symfony/console:^5.4" --no-update --no-interaction
         if: "matrix.symfony == '5'"
 
       - name: Select Symfony 6
-        uses: nick-invision/retry@v1
+        uses: nick-invision/retry@v3
         with:
           timeout_minutes: 5
           max_attempts: 5
-          command: composer require "symfony/process:^6.0" --no-update --no-interaction
+          command: composer require "symfony/console:^6.4" --no-update --no-interaction
         if: "matrix.symfony == '6'"
 
+      - name: Select Symfony 7
+        uses: nick-invision/retry@v3
+        with:
+          timeout_minutes: 5
+          max_attempts: 5
+          command: composer require "symfony/console:^7.0" --no-update --no-interaction
+        if: "matrix.symfony == '7'"
+
       - name: Install PHP Dependencies
-        uses: nick-invision/retry@v1
+        uses: nick-invision/retry@v3
         with:
           timeout_minutes: 5
           max_attempts: 5

@@ -5,7 +5,7 @@ declare(strict_types=1);
 /*
  * This file is part of Class Preloader.
  *
- * (c) Graham Campbell <graham@alt-three.com>
+ * (c) Graham Campbell <hello@gjcampbell.co.uk>
  * (c) Michael Dowling <mtdowling@gmail.com>
  *
  * For the full copyright and license information, please view the LICENSE
@@ -35,7 +35,7 @@ final class PreCompileCommand extends Command
      *
      * @return void
      */
-    protected function configure()
+    protected function configure(): void
     {
         parent::configure();
 
@@ -65,7 +65,7 @@ EOF
      *
      * @return int
      */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         self::validateCommand($input);
 
@@ -116,7 +116,7 @@ EOF
      *
      * @return void
      */
-    private static function validateCommand(InputInterface $input)
+    private static function validateCommand(InputInterface $input): void
     {
         if (!$input->getOption('output')) {
             throw new InvalidArgumentException('An output option is required.');
@@ -138,7 +138,7 @@ EOF
      *
      * @return void
      */
-    private static function compileFiles(string $outputFile, bool $strictTypes, $files)
+    private static function compileFiles(string $outputFile, bool $strictTypes, $files): void
     {
         $handle = OutputWriter::openOutputFile($outputFile);
 
@@ -160,7 +160,7 @@ EOF
      *
      * @return bool[]
      */
-    protected function getOptions(InputInterface $input)
+    protected function getOptions(InputInterface $input): array
     {
         return [
             'dir'    => (bool) $input->getOption('fix_dir'),

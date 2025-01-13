@@ -14,15 +14,15 @@
         }
     ],
     "require": {
-        "php": "^7.0.8 || ^8.0",
-        "classpreloader/classpreloader": "^4.2",
-        "symfony/console": "^3.4 || ^4.4 || ^5.0 || ^6.0",
+        "php": "^7.2.5 || ^8.0",
+        "classpreloader/classpreloader": "^4.3",
+        "symfony/console": "^4.4 || ^5.4 || ^6.0 || ^7.0",
         "symfony/polyfill-ctype": "^1.9"
     },
     "require-dev": {
-        "bamarni/composer-bin-plugin": "^1.4.1",
-        "phpunit/phpunit": "^6.5.14 || ^7.5.20 || ^8.5.19",
-        "graham-campbell/analyzer": "^2.4.3 || ^3.0.4"
+        "bamarni/composer-bin-plugin": "^1.8.1",
+        "phpunit/phpunit": "^8.5.41 || ^9.6.22",
+        "graham-campbell/analyzer": "^3.0.7 || ^4.2.1"
     },
     "autoload": {
         "psr-4": {
@@ -33,9 +33,16 @@
         "classmap": ["tests/stubs/"]
     },
     "bin": ["bin/classpreloader"],
-    "config": {
-        "preferred-install": "dist"
+    "extra": {
+        "bamarni-bin": {
+            "bin-links": true,
+            "forward-command": false
+        }
     },
-    "minimum-stability": "dev",
-    "prefer-stable": true
+    "config": {
+        "preferred-install": "dist",
+        "allow-plugins": {
+            "bamarni/composer-bin-plugin": true
+        }
+    }
 }
